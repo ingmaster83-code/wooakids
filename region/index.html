@@ -1,0 +1,25 @@
+---
+layout: default
+title: 지역별 아이랑 갈만한 곳
+description: 전국 17개 시/도별 어린이 놀이시설과 관광지 정보를 찾아보세요.
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  <span>지역별</span>
+</div>
+
+<div class="region-wrap">
+  <h1 class="region-title">🗺️ 지역별로 찾기</h1>
+  <p class="region-count">전국 17개 시/도 어린이 시설 정보</p>
+
+  <div class="btn-grid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr))">
+    {% assign sidos = "서울,부산,대구,인천,광주,대전,울산,세종,경기,강원,충북,충남,전북,전남,경북,경남,제주" | split: "," %}
+    {% for sido in sidos %}
+    <a href="/region/{{ sido }}/" class="btn-card">
+      <span style="font-size:1.1rem;font-weight:700">{{ sido }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>

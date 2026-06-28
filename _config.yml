@@ -1,0 +1,32 @@
+title: 우아키즈 - 아이랑 갈만한 곳
+description: >-
+  전국 어린이 놀이시설 안전검사 현황과 아이랑 갈만한 관광지를 한눈에!
+  행정안전부 공공데이터 기반 신뢰할 수 있는 어린이 시설 정보.
+url: "https://wooakids.wooahouse.com"
+baseurl: ""
+lang: ko
+timezone: Asia/Seoul
+author: WooaHouse
+
+ad_mode: "dev"   # dev | prod
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - scripts/
+  - "*.py"
+  - "*.bat"
+  - "*.txt"
+  - README.md
+  - .gitignore
+  - .env
+  - vendor/

@@ -1,0 +1,130 @@
+---
+layout: default
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  {% if page.sido %}<a href="/region/{{ page.sido | remove: ' ' }}/">{{ page.sido }}</a><span class="sep">›</span>{% endif %}
+  <span>{{ page.facilityName }}</span>
+</div>
+
+<div class="detail-wrap">
+  <div class="detail-header">
+    <span class="type-badge">
+      {% if page.contentType == "12" %}🏞️ 관광지
+      {% elsif page.contentType == "14" %}🏛️ 문화시설
+      {% elsif page.contentType == "28" %}🎡 레포츠
+      {% else %}📍 시설{% endif %}
+    </span>
+    {% if page.sido %}<span class="type-badge" style="margin-left:6px">{{ page.sido }}</span>{% endif %}
+    <h1 class="detail-title">{{ page.facilityName }}</h1>
+    {% if page.address %}<p class="detail-addr">📍 {{ page.address }}</p>{% endif %}
+    {% if page.tel and page.tel != "" %}<p class="detail-addr">📞 {{ page.tel }}</p>{% endif %}
+  </div>
+
+  {% if page.firstImage and page.firstImage != "" %}
+  <img class="attraction-img" src="{{ page.firstImage }}" alt="{{ page.facilityName }}" loading="lazy">
+  {% endif %}
+
+  <!-- 상세 설명 -->
+  <div class="info-box">
+    {% if page.overview and page.overview != "" %}
+    <p class="overview-text">{{ page.overview | strip_html }}</p>
+    {% elsif page.seoDescription and page.seoDescription != "" %}
+    <p>{{ page.seoDescription }}</p>
+    {% else %}
+    <p>아이랑 방문하기 좋은 {{ page.contentTypeLabel }} 시설입니다. 방문 전 운영시간 및 입장료를 해당 시설 공식 홈페이지에서 확인하세요.</p>
+    {% endif %}
+    {% if page.address and page.address != "" %}
+    <p class="map-links">
+      🗺️ <a href="https://map.naver.com/search/{{ page.facilityName | url_encode }}" target="_blank" rel="noopener">네이버 지도</a>
+      &nbsp;·&nbsp;
+      <a href="https://map.kakao.com/?q={{ page.facilityName | url_encode }}" target="_blank" rel="noopener">카카오맵</a>
+    </p>
+    {% endif %}
+  </div>
+
+  <!-- 이용 정보 -->
+  {% assign has_info = false %}
+  {% if page.usetime and page.usetime != "" %}{% assign has_info = true %}{% endif %}
+  {% if page.usefee and page.usefee != "" %}{% assign has_info = true %}{% endif %}
+  {% if page.parking and page.parking != "" %}{% assign has_info = true %}{% endif %}
+  {% if page.chkbabycarriage and page.chkbabycarriage != "" %}{% assign has_info = true %}{% endif %}
+  {% if page.restdate and page.restdate != "" %}{% assign has_info = true %}{% endif %}
+
+  {% if has_info %}
+  <div class="facility-info">
+    <h3>📋 이용 정보</h3>
+    <table class="info-table">
+      {% if page.usetime and page.usetime != "" %}
+      <tr><td>🕐 운영시간</td><td>{{ page.usetime | strip_html }}</td></tr>
+      {% endif %}
+      {% if page.restdate and page.restdate != "" %}
+      <tr><td>🚫 휴무일</td><td>{{ page.restdate | strip_html }}</td></tr>
+      {% endif %}
+      {% if page.usefee and page.usefee != "" %}
+      <tr><td>💰 입장료</td><td>{{ page.usefee | strip_html }}</td></tr>
+      {% endif %}
+      {% if page.parking and page.parking != "" %}
+      <tr><td>🚗 주차</td><td>{{ page.parking | strip_html }}</td></tr>
+      {% endif %}
+      {% if page.chkbabycarriage and page.chkbabycarriage != "" %}
+      <tr><td>👶 유모차</td><td>{{ page.chkbabycarriage }}</td></tr>
+      {% endif %}
+      {% if page.chkpet and page.chkpet != "" %}
+      <tr><td>🐶 반려동물</td><td>{{ page.chkpet }}</td></tr>
+      {% endif %}
+      {% if page.expagerange and page.expagerange != "" %}
+      <tr><td>👦 이용연령</td><td>{{ page.expagerange }}</td></tr>
+      {% endif %}
+      {% if page.openperiod and page.openperiod != "" %}
+      <tr><td>📅 운영기간</td><td>{{ page.openperiod }}</td></tr>
+      {% endif %}
+    </table>
+    {% if page.homepage and page.homepage != "" %}
+    <p style="margin-top:12px">
+      🔗 <a href="{{ page.homepage | strip_html }}" target="_blank" rel="noopener">공식 홈페이지</a>
+    </p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% include ad-slot.html slot="1419180025" label="본문 중간 배너" %}
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TouristAttraction",
+    "name": "{{ page.facilityName }}",
+    "address": { "@type": "PostalAddress", "streetAddress": "{{ page.address }}", "addressRegion": "{{ page.sido }}" }
+    {% if page.tel and page.tel != "" %},"telephone": "{{ page.tel }}"{% endif %}
+    {% if page.firstImage and page.firstImage != "" %},"image": "{{ page.firstImage }}"{% endif %}
+    {% if page.overview and page.overview != "" %},"description": "{{ page.overview | strip_html | truncate: 200 }}"{% endif %}
+  }
+  </script>
+
+  <!-- 주변 관광/문화시설 -->
+  {% if page.nearby_ats and page.nearby_ats.size > 0 %}
+  <div class="nearby-section">
+    <h3>🏛️ 주변 관광/문화시설</h3>
+    <div class="nearby-list">
+      {% for at in page.nearby_ats %}
+      <a href="/attraction/{{ at.slug }}/" class="nearby-item">
+        <div>
+          <div class="nearby-item-name">{{ at.facilityName }}</div>
+          {% if at.address and at.address != "" %}<div class="nearby-item-addr">📍 {{ at.address }}</div>{% endif %}
+        </div>
+        <span class="type-badge">
+          {% if at.contentType == "12" %}🏞️ 관광지
+          {% elsif at.contentType == "14" %}🏛️ 문화시설
+          {% elsif at.contentType == "28" %}🎡 레포츠
+          {% else %}{{ at.contentTypeLabel }}{% endif %}
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>

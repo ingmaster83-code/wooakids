@@ -1,0 +1,164 @@
+---
+layout: default
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  <a href="/region/">지역별</a>
+  <span class="sep">›</span>
+  {% if page.sigungu %}
+  <a href="/region/{{ page.sido | remove: ' ' }}/">{{ page.sido }}</a>
+  <span class="sep">›</span>
+  <span>{{ page.sigungu }}</span>
+  {% else %}
+  <span>{{ page.sido }}</span>
+  {% endif %}
+</div>
+
+<div class="region-wrap">
+  <h1 class="region-title">
+    {{ page.sido }}{% if page.sigungu %} {{ page.sigungu }}{% endif %} 아이랑 갈만한 곳
+  </h1>
+  <p class="region-count">
+    어린이 놀이시설 {{ page.pg_count }}개 · 관광/문화시설 {{ page.at_count }}개
+  </p>
+
+  {% include ad-slot.html slot="7080296704" label="상단 배너" %}
+
+  {% if page.sigungu == "" or page.sigungu == nil %}
+  <!-- ── 시도 페이지: 시군구 카드 그리드 ── -->
+  {% assign sgg_list = "" %}
+  {% for pg in page.playgrounds %}
+    {% if pg.sigungu != "" and pg.sigungu != nil %}
+      {% unless sgg_list contains pg.sigungu %}
+        {% assign sgg_list = sgg_list | append: pg.sigungu | append: "," %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+  {% for at in page.attractions %}
+    {% if at.sigungu != "" and at.sigungu != nil %}
+      {% unless sgg_list contains at.sigungu %}
+        {% assign sgg_list = sgg_list | append: at.sigungu | append: "," %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+  {% assign sgg_arr = sgg_list | split: "," | uniq | sort %}
+
+  {% if sgg_arr.size > 0 %}
+  <div class="section-title">🏙️ 구/시/군별로 보기</div>
+  <div class="sgg-grid">
+    {% for sgg in sgg_arr %}
+    {% if sgg != "" %}
+    <a href="/region/{{ page.sido | remove: ' ' }}/{{ sgg | remove: ' ' }}/" class="sgg-card">
+      <span class="sgg-name">{{ sgg }}</span>
+    </a>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- 전체 시설도 아래에 표시 -->
+  {% if page.playgrounds.size > 0 %}
+  <div class="section-title" style="margin-top:40px">🛝 어린이 놀이시설 전체</div>
+  <div class="facility-grid">
+    {% for pg in page.playgrounds %}
+    <div class="facility-card">
+      <a href="/playground/{{ pg.slug }}/" class="facility-card-name">{{ pg.name }}</a>
+      {% if pg.sigungu %}<span class="facility-sgg-tag">{{ pg.sigungu }}</span>{% endif %}
+      {% if pg.address %}<p class="facility-card-addr">📍 {{ pg.address }}</p>{% endif %}
+      <div class="facility-card-meta">
+        {% if pg.instlPlace %}<span class="type-badge">{{ pg.instlPlace }}</span>{% endif %}
+        {% if pg.safetyStatus == "green" %}
+          <span class="safety-badge safety-green">✅ 검사합격</span>
+        {% elsif pg.safetyStatus == "yellow" %}
+          <span class="safety-badge safety-yellow">🔔 임박</span>
+        {% elsif pg.safetyStatus == "red" %}
+          <span class="safety-badge safety-red">❌ 주의</span>
+        {% else %}
+          <span class="safety-badge safety-none">검사정보없음</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if page.pg_count > page.playgrounds.size %}
+  <p style="text-align:center;margin-top:16px;font-size:.9rem;color:var(--text-muted)">
+    총 {{ page.pg_count }}개 중 {{ page.playgrounds.size }}개 표시 · 구/군 버튼을 클릭하면 전체 확인 가능
+  </p>
+  {% endif %}
+  {% endif %}
+
+  {% if page.attractions.size > 0 %}
+  <div class="section-title" style="margin-top:40px">🏛️ 관광/문화/레포츠 시설</div>
+  <div class="facility-grid">
+    {% for at in page.attractions %}
+    <div class="facility-card">
+      <a href="/attraction/{{ at.slug }}/" class="facility-card-name">{{ at.name }}</a>
+      {% if at.address %}<p class="facility-card-addr">📍 {{ at.address }}</p>{% endif %}
+      <div class="facility-card-meta">
+        <span class="type-badge">
+          {% if at.contentType == "12" %}🏞️ 관광지
+          {% elsif at.contentType == "14" %}🏛️ 문화시설
+          {% elsif at.contentType == "28" %}🎡 레포츠
+          {% else %}{{ at.contentTypeLabel }}{% endif %}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% else %}
+  <!-- ── 시군구 페이지: 시설 목록 ── -->
+  {% if page.playgrounds.size > 0 %}
+  <div class="section-title">🛝 어린이 놀이시설</div>
+  <div class="facility-grid">
+    {% for pg in page.playgrounds %}
+    <div class="facility-card">
+      <a href="/playground/{{ pg.slug }}/" class="facility-card-name">{{ pg.name }}</a>
+      {% if pg.address %}<p class="facility-card-addr">📍 {{ pg.address }}</p>{% endif %}
+      <div class="facility-card-meta">
+        {% if pg.instlPlace %}<span class="type-badge">{{ pg.instlPlace }}</span>{% endif %}
+        {% if pg.safetyStatus == "green" %}
+          <span class="safety-badge safety-green">✅ 검사합격</span>
+        {% elsif pg.safetyStatus == "yellow" %}
+          <span class="safety-badge safety-yellow">🔔 임박</span>
+        {% elsif pg.safetyStatus == "red" %}
+          <span class="safety-badge safety-red">❌ 주의</span>
+        {% else %}
+          <span class="safety-badge safety-none">검사정보없음</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if page.pg_count > page.playgrounds.size %}
+  <p style="text-align:center;margin-top:16px;font-size:.9rem;color:var(--text-muted)">
+    총 {{ page.pg_count }}개 중 {{ page.playgrounds.size }}개 표시
+  </p>
+  {% endif %}
+  {% endif %}
+
+  {% if page.attractions.size > 0 %}
+  <div class="section-title" style="margin-top:40px">🏛️ 관광/문화/레포츠 시설</div>
+  <div class="facility-grid">
+    {% for at in page.attractions %}
+    <div class="facility-card">
+      <a href="/attraction/{{ at.slug }}/" class="facility-card-name">{{ at.name }}</a>
+      {% if at.address %}<p class="facility-card-addr">📍 {{ at.address }}</p>{% endif %}
+      <div class="facility-card-meta">
+        <span class="type-badge">
+          {% if at.contentType == "12" %}🏞️ 관광지
+          {% elsif at.contentType == "14" %}🏛️ 문화시설
+          {% elsif at.contentType == "28" %}🎡 레포츠
+          {% else %}{{ at.contentTypeLabel }}{% endif %}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% endif %}
+</div>

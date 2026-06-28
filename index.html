@@ -1,0 +1,156 @@
+---
+layout: default
+title: 우아키즈 - 아이랑 갈만한 곳 전국 정보
+description: 전국 어린이 놀이시설 안전검사 현황과 아이랑 갈만한 관광지를 한눈에! 행정안전부 공공데이터 기반 85,000개+ 시설 정보.
+---
+
+<!-- 히어로 섹션 -->
+<section class="hero">
+  <h1>🛝 아이랑 갈만한 곳, 우아키즈</h1>
+  <p>전국 어린이 놀이시설 안전검사 현황 · 관광지 · 박물관 · 체험시설 한눈에</p>
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="mainSearch"
+           placeholder="시설명 또는 지역 검색 (예: 강남구 놀이터)" autocomplete="off">
+    <button class="search-btn" onclick="doSearch()">검색</button>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="hero-stat-num">85,000+</span><span class="hero-stat-label">어린이 놀이시설</span></div>
+    <div class="hero-stat-sep">·</div>
+    <div class="hero-stat"><span class="hero-stat-num">1,700+</span><span class="hero-stat-label">관광/문화시설</span></div>
+    <div class="hero-stat-sep">·</div>
+    <div class="hero-stat"><span class="hero-stat-num">17개</span><span class="hero-stat-label">시/도 전국 커버</span></div>
+    <div class="hero-stat-sep">·</div>
+    <div class="hero-stat"><span class="hero-stat-num">✅</span><span class="hero-stat-label">안전검사 직접 확인</span></div>
+  </div>
+</section>
+
+{% include ad-slot.html slot="7080296704" label="메인 상단 배너" %}
+
+<!-- 유형별 찾기 -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title">🔍 유형별로 찾기</h2>
+  <div class="btn-grid">
+    <a href="/type/놀이터/" class="btn-card">
+      <span class="icon">🛝</span>어린이 놀이터
+    </a>
+    <a href="/type/박물관/" class="btn-card">
+      <span class="icon">🏛️</span>박물관/미술관
+    </a>
+    <a href="/type/동물원/" class="btn-card">
+      <span class="icon">🐘</span>동물원/식물원
+    </a>
+    <a href="/type/테마파크/" class="btn-card">
+      <span class="icon">🎡</span>테마파크
+    </a>
+    <a href="/type/체험/" class="btn-card">
+      <span class="icon">🎨</span>체험시설
+    </a>
+    <a href="/type/레포츠/" class="btn-card">
+      <span class="icon">⛹️</span>레포츠
+    </a>
+  </div>
+</section>
+
+<!-- 지역별 찾기 -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title">🗺️ 지역별로 찾기</h2>
+  <div class="btn-grid" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))">
+    {% assign sidos = "서울,부산,대구,인천,광주,대전,울산,세종,경기,강원,충북,충남,전북,전남,경북,경남,제주" | split: "," %}
+    {% for sido in sidos %}
+    <a href="/region/{{ sido }}/" class="btn-card" style="padding:14px 8px">
+      <span style="font-size:.95rem;font-weight:700">{{ sido }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- 이용 안내 -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title">📋 이용 안내</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+    <div style="background:var(--white);border-radius:var(--radius);padding:20px;border:1px solid var(--border)">
+      <div style="font-size:1.5rem;margin-bottom:8px">✅</div>
+      <strong>안전검사 현황 직접 확인</strong>
+      <p style="font-size:.88rem;color:var(--text-muted);margin-top:6px">
+        행정안전부 공공데이터 기반으로 각 시설의 최신 안전검사 합격 여부와 유효기간을 확인하세요.
+      </p>
+    </div>
+    <div style="background:var(--white);border-radius:var(--radius);padding:20px;border:1px solid var(--border)">
+      <div style="font-size:1.5rem;margin-bottom:8px">🏛️</div>
+      <strong>관광지·박물관·체험시설</strong>
+      <p style="font-size:.88rem;color:var(--text-muted);margin-top:6px">
+        한국관광공사 데이터로 아이와 함께 방문하기 좋은 문화시설, 관광지, 레포츠 시설을 찾아보세요.
+      </p>
+    </div>
+    <div style="background:var(--white);border-radius:var(--radius);padding:20px;border:1px solid var(--border)">
+      <div style="font-size:1.5rem;margin-bottom:8px">🗺️</div>
+      <strong>지역별 통합 검색</strong>
+      <p style="font-size:.88rem;color:var(--text-muted);margin-top:6px">
+        전국 17개 시/도와 시군구별로 우리 동네 어린이 시설을 한눈에 모아보세요.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 검색 결과 (JS) -->
+<div id="search-result-section" style="display:none" class="section" style="padding-top:0">
+  <h2 class="section-title">검색 결과</h2>
+  <p class="search-result-count" id="search-result-count"></p>
+  <div class="facility-grid" id="search-results"></div>
+</div>
+
+<script src="/assets/js/fuse.min.js"></script>
+<script>
+let fuseIndex = null;
+let fuse = null;
+
+async function loadIndex() {
+  if (fuse) return;
+  const resp = await fetch('/search_index.json');
+  const data = await resp.json();
+  fuse = new Fuse(data, {
+    keys: ['name', 'sido', 'sigungu', 'address', 'instlPlace', 'typeLabel'],
+    threshold: 0.35,
+    minMatchCharLength: 2,
+  });
+}
+
+async function doSearch() {
+  const q = document.getElementById('mainSearch').value.trim();
+  if (!q) return;
+  await loadIndex();
+  const results = fuse.search(q).slice(0, 40);
+  const section = document.getElementById('search-result-section');
+  const grid = document.getElementById('search-results');
+  const count = document.getElementById('search-result-count');
+
+  section.style.display = 'block';
+  section.scrollIntoView({ behavior: 'smooth' });
+  count.textContent = `"${q}" 검색 결과 ${results.length}건`;
+
+  if (!results.length) {
+    grid.innerHTML = '<div class="no-results"><div class="icon">🔍</div><p>검색 결과가 없습니다</p></div>';
+    return;
+  }
+
+  grid.innerHTML = results.map(({ item: r }) => {
+    const url = r.type === 'playground' ? `/playground/${r.slug}/` : `/attraction/${r.slug}/`;
+    const badge = r.type === 'playground'
+      ? (r.safetyStatus === 'green' ? '<span class="safety-badge safety-green">✅ 합격</span>'
+       : r.safetyStatus === 'yellow' ? '<span class="safety-badge safety-yellow">🔔 임박</span>'
+       : r.safetyStatus === 'red' ? '<span class="safety-badge safety-red">❌ 주의</span>'
+       : '<span class="safety-badge safety-none">검사없음</span>')
+      : `<span class="type-badge">${r.typeLabel || '관광지'}</span>`;
+
+    return `<div class="facility-card">
+      <a href="${url}" class="facility-card-name">${r.name}</a>
+      <p class="facility-card-addr">📍 ${r.address || r.sido || ''}</p>
+      <div class="facility-card-meta">${badge}</div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('mainSearch').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+</script>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if page.title %}{{ page.title }} | 우아키즈{% else %}우아키즈 - 아이랑 갈만한 곳{% endif %}</title>
+  <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% if page.title %}{{ page.title }} | 우아키즈{% else %}우아키즈{% endif %}">
+  <meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+  {% if page.firstImage %}<meta property="og:image" content="{{ page.firstImage }}">{% endif %}
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:site_name" content="우아키즈">
+  <meta name="twitter:card" content="summary_large_image">
+
+  {% if page.hreflang_ko %}<link rel="alternate" hreflang="ko" href="{{ page.hreflang_ko }}">{% endif %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+
+  {% if site.ad_mode == "prod" %}
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6464921081676309" crossorigin="anonymous"></script>
+  {% endif %}
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="{{ '/' | relative_url }}" class="site-logo">
+      <span class="logo-icon">🛝</span>
+      <span class="logo-text">우아키즈</span>
+    </a>
+    <nav class="header-nav">
+      <a href="{{ '/' | relative_url }}">홈</a>
+      <a href="{{ '/region/' | relative_url }}">지역별</a>
+      <a href="{{ '/type/' | relative_url }}">유형별</a>
+      <a href="https://wooahouse.com" target="_blank" rel="noopener">WooaHouse →</a>
+    </nav>
+  </div>
+</header>
+
+<main class="site-main">
+  {{ content }}
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://wooalib.wooahouse.com" target="_blank">WooaLib</a> ·
+      <a href="https://hosppass.wooahouse.com" target="_blank">HospPass</a> ·
+      <a href="https://wooacamp.wooahouse.com" target="_blank">WooaCamp</a> ·
+      <a href="https://wooasijang.wooahouse.com" target="_blank">WooaSijang</a> ·
+      <a href="https://wooahouse.com" target="_blank">WooaHouse</a>
+    </div>
+    <p class="footer-disclaimer">
+      본 정보는 행정안전부 어린이놀이시설 안전관리시스템 및 한국관광공사 공공데이터를 기반으로 합니다.<br>
+      안전검사 정보는 변경될 수 있으므로 방문 전 반드시 해당 시설에 직접 문의하세요.
+    </p>
+    <p class="copyright">&copy; 2026 우아키즈 · WooaHouse. All rights reserved.</p>
+  </div>
+</footer>
+
+{% if page.layout == 'playground' or page.layout == 'attraction' %}
+<script src="{{ '/assets/js/fuse.min.js' | relative_url }}"></script>
+{% endif %}
+
+</body>
+</html>

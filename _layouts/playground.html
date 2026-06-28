@@ -1,0 +1,130 @@
+---
+layout: default
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  {% if page.sido %}<a href="/region/{{ page.sido | remove: ' ' }}/">{{ page.sido }}</a><span class="sep">›</span>{% endif %}
+  {% if page.sigungu and page.sigungu != "" %}<a href="/region/{{ page.sido | remove: ' ' }}/{{ page.sigungu | remove: ' ' }}/">{{ page.sigungu }}</a><span class="sep">›</span>{% endif %}
+  <span>{{ page.facilityName }}</span>
+</div>
+
+<div class="detail-wrap">
+  <div class="detail-header">
+    <span class="type-badge">🛝 어린이 놀이시설</span>
+    {% if page.instlPlace and page.instlPlace != "" %}<span class="type-badge" style="margin-left:6px">{{ page.instlPlace }}</span>{% endif %}
+    {% if page.idrodr and page.idrodr != "" %}<span class="type-badge" style="margin-left:6px">{{ page.idrodr }}</span>{% endif %}
+    <h1 class="detail-title">{{ page.facilityName }}</h1>
+    {% if page.address and page.address != "" %}
+    <p class="detail-addr">
+      📍 {{ page.address }}
+      &nbsp;·&nbsp;
+      <a href="https://map.naver.com/search/{{ page.facilityName | url_encode }}" target="_blank" rel="noopener" style="font-size:.85rem">네이버 지도</a>
+      &nbsp;·&nbsp;
+      <a href="https://map.kakao.com/?q={{ page.facilityName | url_encode }}" target="_blank" rel="noopener" style="font-size:.85rem">카카오맵</a>
+    </p>
+    {% endif %}
+  </div>
+
+  <!-- 안전검사 현황 -->
+  {% assign safety_class = "none" %}
+  {% if page.safetyStatus == "green" %}{% assign safety_class = "green" %}
+  {% elsif page.safetyStatus == "yellow" %}{% assign safety_class = "yellow" %}
+  {% elsif page.safetyStatus == "red" %}{% assign safety_class = "red" %}{% endif %}
+
+  <div class="safety-box {{ safety_class }}">
+    <div class="safety-box-title">
+      {% if page.safetyStatus == "green" %}✅ 안전검사 합격 (유효)
+      {% elsif page.safetyStatus == "yellow" %}🔔 안전검사 합격 (유효기간 30일 이내 임박)
+      {% elsif page.safetyStatus == "red" %}❌ 안전검사 불합격 또는 기간 만료
+      {% else %}ℹ️ 안전검사 정보 없음{% endif %}
+    </div>
+    {% if page.safetyInspYmd != "" or page.safetyVldYmd != "" %}
+    <table class="safety-table">
+      {% if page.safetyInspYmd and page.safetyInspYmd != "" %}
+      <tr>
+        <td>검사일자</td>
+        <td>{{ page.safetyInspYmd | slice: 0, 4 }}-{{ page.safetyInspYmd | slice: 4, 2 }}-{{ page.safetyInspYmd | slice: 6, 2 }}</td>
+      </tr>
+      {% endif %}
+      {% if page.safetyVldYmd and page.safetyVldYmd != "" %}
+      <tr>
+        <td>유효기간</td>
+        <td>{{ page.safetyVldYmd | slice: 0, 4 }}-{{ page.safetyVldYmd | slice: 4, 2 }}-{{ page.safetyVldYmd | slice: 6, 2 }}</td>
+      </tr>
+      {% endif %}
+      {% if page.safetyPass and page.safetyPass != "" %}
+      <tr><td>합부판정</td><td>{% if page.safetyPass == "Y" %}합격{% else %}불합격{% endif %}</td></tr>
+      {% endif %}
+      {% if page.instlYmd and page.instlYmd != "" %}
+      <tr><td>설치연도</td><td>{{ page.instlYmd | slice: 0, 4 }}년</td></tr>
+      {% endif %}
+    </table>
+    {% else %}
+    <p style="color:var(--text-muted);font-size:.9rem">등록된 안전검사 정보가 없습니다. 해당 시설에 직접 문의하세요.</p>
+    {% endif %}
+  </div>
+
+  {% include ad-slot.html slot="1419180025" label="본문 중간 배너" %}
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Park",
+    "name": "{{ page.facilityName }}",
+    "address": { "@type": "PostalAddress", "streetAddress": "{{ page.address }}", "addressRegion": "{{ page.sido }}" }
+    {% if page.lat and page.lat != "" %},
+    "geo": { "@type": "GeoCoordinates", "latitude": {{ page.lat }}, "longitude": {{ page.lng }} }
+    {% endif %}
+  }
+  </script>
+
+  <!-- 주변 놀이시설 -->
+  {% if page.nearby_pgs and page.nearby_pgs.size > 0 %}
+  <div class="nearby-section">
+    <h3>🛝 주변 놀이시설</h3>
+    <div class="nearby-list">
+      {% for pg in page.nearby_pgs %}
+      <a href="/playground/{{ pg.slug }}/" class="nearby-item">
+        <div>
+          <div class="nearby-item-name">{{ pg.facilityName }}</div>
+          {% if pg.address and pg.address != "" %}<div class="nearby-item-addr">📍 {{ pg.address }}</div>{% endif %}
+        </div>
+        {% if pg.safetyStatus == "green" %}<span class="safety-badge safety-green">✅ 합격</span>
+        {% elsif pg.safetyStatus == "yellow" %}<span class="safety-badge safety-yellow">🔔 임박</span>
+        {% elsif pg.safetyStatus == "red" %}<span class="safety-badge safety-red">❌ 주의</span>
+        {% else %}<span class="safety-badge safety-none">정보없음</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 주변 관광시설 -->
+  {% if page.nearby_ats and page.nearby_ats.size > 0 %}
+  <div class="nearby-section" style="margin-top:24px">
+    <h3>🏛️ 주변 관광/문화시설</h3>
+    <div class="nearby-list">
+      {% for at in page.nearby_ats %}
+      <a href="/attraction/{{ at.slug }}/" class="nearby-item">
+        <div>
+          <div class="nearby-item-name">{{ at.facilityName }}</div>
+          {% if at.address and at.address != "" %}<div class="nearby-item-addr">📍 {{ at.address }}</div>{% endif %}
+        </div>
+        <span class="type-badge">
+          {% if at.contentType == "12" %}🏞️ 관광지
+          {% elsif at.contentType == "14" %}🏛️ 문화시설
+          {% elsif at.contentType == "28" %}🎡 레포츠
+          {% else %}{{ at.contentTypeLabel }}{% endif %}
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+    <p style="margin-top:12px;font-size:.85rem">
+      <a href="/region/{{ page.sido | remove: ' ' }}/">{{ page.sido }} 전체 시설 보기 →</a>
+    </p>
+  </div>
+  {% endif %}
+</div>

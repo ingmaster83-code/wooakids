@@ -26,6 +26,17 @@ layout: default
     <a href="/type/landmark/" class="type-nav-btn {% if page.type_slug == 'landmark' %}active{% endif %}">🏗️ 랜드마크</a>
   </div>
 
+  {% if page.type_slug == 'sports' %}
+  <a href="https://wooacamp.wooahouse.com" target="_blank" rel="noopener" class="camp-banner">
+    <span class="camp-banner-icon">🏕️</span>
+    <div>
+      <strong>캠핑장을 찾고 계신가요?</strong>
+      <p>전국 캠핑장 정보는 우아캠핑에서 확인하세요</p>
+    </div>
+    <span class="camp-banner-arrow">→</span>
+  </a>
+  {% endif %}
+
   {% if page.attractions.size > 0 %}
   <div class="facility-grid">
     {% for at in page.attractions %}

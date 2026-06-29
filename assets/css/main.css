@@ -374,6 +374,21 @@ img { max-width: 100%; }
 .type-card-label { font-size: .9rem; text-align: center; }
 
 /* 유형 페이지 내 탭 네비 */
+/* 우아캠핑 배너 */
+.camp-banner {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 24px; margin-bottom: 24px;
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  border-radius: 12px; text-decoration: none; color: #fff;
+  transition: opacity .2s, transform .15s;
+}
+.camp-banner:hover { opacity: .92; transform: translateY(-1px); text-decoration: none; color: #fff; }
+.camp-banner-icon { font-size: 2.2rem; flex-shrink: 0; }
+.camp-banner strong { display: block; font-size: 1rem; margin-bottom: 2px; }
+.camp-banner p { font-size: .85rem; margin: 0; opacity: .85; }
+.camp-banner-arrow { margin-left: auto; font-size: 1.4rem; flex-shrink: 0; }
+
+/* 유형 페이지 내 탭 네비 */
 .type-nav {
   display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px;
 }

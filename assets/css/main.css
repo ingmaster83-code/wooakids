@@ -333,14 +333,19 @@ img { max-width: 100%; }
   white-space: pre-line;
 }
 
-/* ===== 주차장 버튼 ===== */
-.parking-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: #1D4ED8; color: #fff; border-radius: 8px;
-  padding: 7px 16px; font-size: .88rem; font-weight: 600;
-  text-decoration: none; transition: background .2s; margin-top: 10px;
+/* ===== 액션 버튼 그룹 ===== */
+.action-btns {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
 }
-.parking-btn:hover { background: #1E40AF; color: #fff; }
+.action-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 16px; border-radius: 20px; font-size: .85rem; font-weight: 600;
+  text-decoration: none; transition: opacity .2s;
+}
+.action-btn:hover { opacity: .85; text-decoration: none; }
+.btn-naver  { background: #03C75A; color: #fff; }
+.btn-kakao  { background: #FEE500; color: #3C1E1E; }
+.btn-parking { background: #1D4ED8; color: #fff; }
 
 /* ===== 반응형 ===== */
 @media (max-width: 768px) {

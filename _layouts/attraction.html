@@ -37,11 +37,7 @@ layout: default
     <p>아이랑 방문하기 좋은 {{ page.contentTypeLabel }} 시설입니다. 방문 전 운영시간 및 입장료를 해당 시설 공식 홈페이지에서 확인하세요.</p>
     {% endif %}
     {% if page.address and page.address != "" %}
-    <div class="action-btns">
-      <a href="https://map.naver.com/search/{{ page.facilityName | url_encode }}" class="action-btn btn-naver">🗺️ 네이버 지도</a>
-      <a href="https://map.kakao.com/?q={{ page.facilityName | url_encode }}" class="action-btn btn-kakao">🗺️ 카카오맵</a>
-      <a href="https://wooaparking.wooahouse.com/?q={{ page.address | url_encode }}" target="_blank" rel="noopener" class="action-btn btn-parking">🅿️ 근처 공영주차장</a>
-    </div>
+    <a href="https://wooaparking.wooahouse.com/?q={{ page.address | url_encode }}" class="action-btn btn-parking">🗺️ 지도 &amp; 공영주차장 확인하기</a>
     {% endif %}
   </div>
 

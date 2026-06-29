@@ -38,8 +38,8 @@ layout: default
     {% endif %}
     {% if page.address and page.address != "" %}
     <div class="action-btns">
-      <a href="https://map.naver.com/search/{{ page.facilityName | url_encode }}" target="_blank" rel="noopener" class="action-btn btn-naver">🗺️ 네이버 지도</a>
-      <a href="https://map.kakao.com/?q={{ page.facilityName | url_encode }}" target="_blank" rel="noopener" class="action-btn btn-kakao">🗺️ 카카오맵</a>
+      <a href="https://map.naver.com/search/{{ page.facilityName | url_encode }}" class="action-btn btn-naver">🗺️ 네이버 지도</a>
+      <a href="https://map.kakao.com/?q={{ page.facilityName | url_encode }}" class="action-btn btn-kakao">🗺️ 카카오맵</a>
       <a href="https://wooaparking.wooahouse.com/?q={{ page.address | url_encode }}" target="_blank" rel="noopener" class="action-btn btn-parking">🅿️ 근처 공영주차장</a>
     </div>
     {% endif %}

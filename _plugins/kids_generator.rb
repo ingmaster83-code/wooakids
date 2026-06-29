@@ -6,33 +6,12 @@ module Jekyll
     priority :normal
 
     def generate(site)
-      playgrounds = load_json(site, '_rawdata/playgrounds.json')
       attractions = load_json(site, '_rawdata/attractions.json')
 
-      Jekyll.logger.info "KidsGenerator:", "놀이시설 #{playgrounds.size}개, 관광지 #{attractions.size}개"
+      Jekyll.logger.info "KidsGenerator:", "관광지 #{attractions.size}개"
 
-      # sido별 인덱스 (주변 시설용)
-      pg_by_sido  = group_by(playgrounds, 'sido')
-      at_by_sido  = group_by(attractions, 'sido')
-      pg_by_sgg   = group_by(playgrounds, 'sigungu')
-      at_by_sgg   = group_by(attractions, 'sigungu')
-
-      playgrounds.each do |pg|
-        next if pg['slug'].to_s.strip.empty?
-        sgg = pg['sigungu'].to_s.strip
-        # 같은 시군구 우선, 부족하면 같은 시도로 채움
-        nearby_pgs = nearby_fill(
-          (pg_by_sgg[sgg] || []).reject { |p| p['slug'] == pg['slug'] },
-          (pg_by_sido[pg['sido']] || []).reject { |p| p['slug'] == pg['slug'] },
-          6
-        )
-        nearby_ats = nearby_fill(
-          (at_by_sgg[sgg] || []),
-          (at_by_sido[pg['sido']] || []),
-          4
-        )
-        site.pages << PlaygroundPage.new(site, pg, nearby_pgs, nearby_ats)
-      end
+      at_by_sido = group_by(attractions, 'sido')
+      at_by_sgg  = group_by(attractions, 'sigungu')
 
       attractions.each do |at|
         next if at['slug'].to_s.strip.empty?
@@ -42,32 +21,23 @@ module Jekyll
           (at_by_sido[at['sido']] || []).reject { |a| a['slug'] == at['slug'] },
           6
         )
-        nearby_pgs = nearby_fill(
-          (pg_by_sgg[sgg] || []),
-          (pg_by_sido[at['sido']] || []),
-          4
-        )
-        site.pages << AttractionPage.new(site, at, nearby_ats, nearby_pgs)
+        site.pages << AttractionPage.new(site, at, nearby_ats)
       end
 
-      all_sidos = (pg_by_sido.keys + at_by_sido.keys).uniq.sort
-      all_sidos.each do |sido|
+      at_by_sido.keys.uniq.sort.each do |sido|
         next if sido.to_s.strip.empty?
-        pgs = pg_by_sido[sido] || []
         ats = at_by_sido[sido] || []
 
-        site.pages << RegionPage.new(site, sido, '', pgs, ats)
+        site.pages << RegionPage.new(site, sido, '', ats)
 
-        pg_by_sgg = group_by(pgs, 'sigungu')
-        at_by_sgg = group_by(ats, 'sigungu')
-        (pg_by_sgg.keys + at_by_sgg.keys).uniq.sort.each do |sgg|
+        sgg_map = group_by(ats, 'sigungu')
+        sgg_map.keys.uniq.sort.each do |sgg|
           next if sgg.to_s.strip.empty?
-          site.pages << RegionPage.new(site, sido, sgg,
-            pg_by_sgg[sgg] || [], at_by_sgg[sgg] || [])
+          site.pages << RegionPage.new(site, sido, sgg, sgg_map[sgg] || [])
         end
       end
 
-      site.pages << SearchIndexPage.new(site, playgrounds, attractions)
+      site.pages << SearchIndexPage.new(site, attractions)
       Jekyll.logger.info "KidsGenerator:", "완료"
     end
 
@@ -102,51 +72,9 @@ module Jekyll
     end
   end
 
-  # ── 놀이시설 상세 ──────────────────────
-  class PlaygroundPage < Page
-    def initialize(site, pg, nearby_pgs, nearby_ats)
-      @site = site
-      @base = site.source
-      @dir  = "playground/#{pg['slug']}"
-      @name = 'index.html'
-
-      self.process(@name)
-      self.read_yaml(File.join(@base, '_layouts'), 'playground.html')
-      self.data.merge!(pg)
-      self.data['layout']        = 'playground'
-      self.data['facilityName']  = pg['name']
-      self.data['title']         = "#{pg['name']} 위치 안전검사 현황"
-      self.data['description']   = build_pg_desc(pg)
-      self.data['nearby_pgs']    = nearby_pgs.map { |p| slim_pg(p) }
-      self.data['nearby_ats']    = nearby_ats.map { |a| slim_at(a) }
-    end
-
-    private
-
-    def build_pg_desc(pg)
-      return pg['seoDescription'] if pg['seoDescription'].to_s.length > 10
-      addr   = pg['address'] || ''
-      place  = pg['instlPlace'] || ''
-      safety = pg['safetyPass'] == 'Y' ? '안전검사 합격' : '안전검사 정보'
-      "#{pg['name']} #{addr} 어린이 놀이시설 #{place} #{safety} 현황을 확인하세요."[0, 155]
-    end
-
-    def slim_pg(p)
-      { 'slug' => p['slug'], 'facilityName' => p['name'],
-        'address' => p['address'], 'instlPlace' => p['instlPlace'],
-        'safetyStatus' => p['safetyStatus'] }
-    end
-
-    def slim_at(a)
-      { 'slug' => a['slug'], 'facilityName' => a['name'],
-        'address' => a['address'], 'contentType' => a['contentType'],
-        'contentTypeLabel' => a['contentTypeLabel'] }
-    end
-  end
-
   # ── 관광지 상세 ──────────────────────
   class AttractionPage < Page
-    def initialize(site, at, nearby_ats, nearby_pgs)
+    def initialize(site, at, nearby_ats)
       @site = site
       @base = site.source
       @dir  = "attraction/#{at['slug']}"
@@ -155,12 +83,11 @@ module Jekyll
       self.process(@name)
       self.read_yaml(File.join(@base, '_layouts'), 'attraction.html')
       self.data.merge!(at)
-      self.data['layout']        = 'attraction'
-      self.data['facilityName']  = at['name']
-      self.data['title']         = "#{at['name']} 아이랑 갈만한 곳"
-      self.data['description']   = build_at_desc(at)
-      self.data['nearby_ats']    = nearby_ats.map { |a| slim_at(a) }
-      self.data['nearby_pgs']    = nearby_pgs.map { |p| slim_pg(p) }
+      self.data['layout']       = 'attraction'
+      self.data['facilityName'] = at['name']
+      self.data['title']        = "#{at['name']} 아이랑 갈만한 곳"
+      self.data['description']  = build_at_desc(at)
+      self.data['nearby_ats']   = nearby_ats.map { |a| slim_at(a) }
     end
 
     private
@@ -177,26 +104,20 @@ module Jekyll
         'address' => a['address'], 'contentType' => a['contentType'],
         'contentTypeLabel' => a['contentTypeLabel'], 'firstImage' => a['firstImage'] }
     end
-
-    def slim_pg(p)
-      { 'slug' => p['slug'], 'facilityName' => p['name'],
-        'address' => p['address'], 'instlPlace' => p['instlPlace'],
-        'safetyStatus' => p['safetyStatus'] }
-    end
   end
 
   # ── 지역별 페이지 ──────────────────────
   class RegionPage < Page
-    def initialize(site, sido, sigungu, playgrounds, attractions)
+    def initialize(site, sido, sigungu, attractions)
       @site = site
       @base = site.source
 
       slug_sido = sido.gsub(/\s+/, '')
       if sigungu.to_s.strip.empty?
-        @dir = "region/#{slug_sido}"
+        @dir      = "region/#{slug_sido}"
         title_loc = sido
       else
-        @dir = "region/#{slug_sido}/#{sigungu.gsub(/\s+/, '')}"
+        @dir      = "region/#{slug_sido}/#{sigungu.gsub(/\s+/, '')}"
         title_loc = "#{sido} #{sigungu}"
       end
       @name = 'index.html'
@@ -207,25 +128,19 @@ module Jekyll
       self.data['sido']        = sido
       self.data['sigungu']     = sigungu.to_s
       self.data['title']       = "#{title_loc} 아이랑 갈만한 곳"
-      self.data['description'] = "#{title_loc} 어린이 놀이시설 #{playgrounds.size}개, 관광지 #{attractions.size}개 정보. 안전검사 현황 포함."
-      self.data['playgrounds'] = playgrounds.first(60).map do |p|
-        { 'slug' => p['slug'], 'facilityName' => p['name'],
-          'address' => p['address'], 'sigungu' => p['sigungu'],
-          'instlPlace' => p['instlPlace'], 'safetyStatus' => p['safetyStatus'] }
-      end
-      self.data['attractions'] = attractions.first(40).map do |a|
+      self.data['description'] = "#{title_loc} 아이랑 갈만한 관광지·문화시설·레포츠 #{attractions.size}개 정보."
+      self.data['attractions'] = attractions.first(60).map do |a|
         { 'slug' => a['slug'], 'facilityName' => a['name'],
           'address' => a['address'], 'contentType' => a['contentType'],
           'contentTypeLabel' => a['contentTypeLabel'] }
       end
-      self.data['pg_count']    = playgrounds.size
-      self.data['at_count']    = attractions.size
+      self.data['at_count'] = attractions.size
     end
   end
 
   # ── 검색 인덱스 ──────────────────────
   class SearchIndexPage < Page
-    def initialize(site, playgrounds, attractions)
+    def initialize(site, attractions)
       @site = site
       @base = site.source
       @dir  = ''
@@ -234,13 +149,6 @@ module Jekyll
       self.process(@name)
       self.data = { 'layout' => nil, 'sitemap' => false }
 
-      pg_index = playgrounds.map do |pg|
-        { 'type' => 'playground', 'slug' => pg['slug'],
-          'name' => pg['name'], 'sido' => pg['sido'],
-          'sigungu' => pg['sigungu'], 'address' => pg['address'],
-          'instlPlace' => pg['instlPlace'], 'safetyStatus' => pg['safetyStatus'] }
-      end
-
       at_index = attractions.map do |at|
         { 'type' => 'attraction', 'slug' => at['slug'],
           'name' => at['name'], 'sido' => at['sido'],
@@ -248,7 +156,7 @@ module Jekyll
           'firstImage' => at['firstImage'] }
       end
 
-      self.content = (pg_index + at_index).to_json
+      self.content = at_index.to_json
     end
 
     def output   = self.content

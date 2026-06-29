@@ -333,6 +333,15 @@ img { max-width: 100%; }
   white-space: pre-line;
 }
 
+/* ===== 주차장 버튼 ===== */
+.parking-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #1D4ED8; color: #fff; border-radius: 8px;
+  padding: 7px 16px; font-size: .88rem; font-weight: 600;
+  text-decoration: none; transition: background .2s; margin-top: 10px;
+}
+.parking-btn:hover { background: #1E40AF; color: #fff; }
+
 /* ===== 반응형 ===== */
 @media (max-width: 768px) {
   .hero h1 { font-size: 1.6rem; }

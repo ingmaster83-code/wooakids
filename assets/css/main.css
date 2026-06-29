@@ -338,14 +338,53 @@ img { max-width: 100%; }
   display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
 }
 .action-btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 8px 16px; border-radius: 20px; font-size: .85rem; font-weight: 600;
-  text-decoration: none; transition: opacity .2s;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 28px; border-radius: 8px; font-size: 1rem; font-weight: 700;
+  text-decoration: none; transition: background .2s, transform .1s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-.action-btn:hover { opacity: .85; text-decoration: none; }
+.action-btn:hover { text-decoration: none; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+.action-btn:active { transform: translateY(0); }
 .btn-naver  { background: #03C75A; color: #fff; }
 .btn-kakao  { background: #FEE500; color: #3C1E1E; }
 .btn-parking { background: #1D4ED8; color: #fff; }
+.btn-parking:hover { background: #1e40af; color: #fff; }
+.action-btn-wrap { text-align: center; margin-top: 20px; }
+
+/* ===== 유형별 카드 ===== */
+.type-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+.type-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 24px 12px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 12px; text-decoration: none; color: var(--text);
+  transition: border-color .2s, box-shadow .2s, transform .15s;
+  font-weight: 600;
+}
+.type-card:hover {
+  border-color: #6366f1; box-shadow: 0 4px 16px rgba(99,102,241,.15);
+  transform: translateY(-2px); text-decoration: none; color: var(--text);
+}
+.type-card-emoji { font-size: 2rem; line-height: 1; }
+.type-card-label { font-size: .9rem; text-align: center; }
+
+/* 유형 페이지 내 탭 네비 */
+.type-nav {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px;
+}
+.type-nav-btn {
+  padding: 6px 14px; border-radius: 20px; font-size: .84rem; font-weight: 600;
+  background: var(--bg); border: 1px solid var(--border);
+  text-decoration: none; color: var(--text); transition: all .2s;
+}
+.type-nav-btn:hover, .type-nav-btn.active {
+  background: #6366f1; border-color: #6366f1; color: #fff; text-decoration: none;
+}
 
 /* ===== 반응형 ===== */
 @media (max-width: 768px) {

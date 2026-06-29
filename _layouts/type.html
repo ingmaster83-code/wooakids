@@ -1,0 +1,47 @@
+---
+layout: default
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  <a href="/type/">유형별</a>
+  <span class="sep">›</span>
+  <span>{{ page.type_emoji }} {{ page.type_label }}</span>
+</div>
+
+<div class="region-wrap">
+  <h1 class="region-title">{{ page.type_emoji }} {{ page.type_label }} 아이랑 갈만한 곳</h1>
+  <p class="region-count">전국 {{ page.at_count }}개 시설</p>
+
+  {% include ad-slot.html slot="7080296704" label="상단 배너" %}
+
+  <!-- 다른 유형 바로가기 -->
+  <div class="type-nav">
+    <a href="/type/nature/" class="type-nav-btn {% if page.type_slug == 'nature' %}active{% endif %}">🌿 자연/공원</a>
+    <a href="/type/history/" class="type-nav-btn {% if page.type_slug == 'history' %}active{% endif %}">🏰 역사/문화재</a>
+    <a href="/type/museum/" class="type-nav-btn {% if page.type_slug == 'museum' %}active{% endif %}">🏛️ 박물관</a>
+    <a href="/type/activity/" class="type-nav-btn {% if page.type_slug == 'activity' %}active{% endif %}">🎨 체험시설</a>
+    <a href="/type/sports/" class="type-nav-btn {% if page.type_slug == 'sports' %}active{% endif %}">⛹️ 레포츠</a>
+    <a href="/type/landmark/" class="type-nav-btn {% if page.type_slug == 'landmark' %}active{% endif %}">🏗️ 랜드마크</a>
+  </div>
+
+  {% if page.attractions.size > 0 %}
+  <div class="facility-grid">
+    {% for at in page.attractions %}
+    <div class="facility-card">
+      {% if at.firstImage and at.firstImage != "" %}
+      <img src="{{ at.firstImage }}" alt="{{ at.facilityName }}" class="facility-card-img" loading="lazy">
+      {% endif %}
+      <a href="/attraction/{{ at.slug }}/" class="facility-card-name">{{ at.facilityName }}</a>
+      {% if at.address and at.address != "" %}<p class="facility-card-addr">📍 {{ at.address }}</p>{% endif %}
+      <div class="facility-card-meta">
+        {% if at.sido and at.sido != "" %}<span class="type-badge">{{ at.sido }}</span>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="text-align:center;padding:40px;color:var(--text-muted)">시설 정보가 없습니다.</p>
+  {% endif %}
+</div>

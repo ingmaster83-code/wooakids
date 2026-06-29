@@ -37,6 +37,21 @@ module Jekyll
         end
       end
 
+      # 카테고리(유형)별 페이지
+      type_groups = {
+        'nature'   => { label: '자연/공원',      emoji: '🌿', cat2s: %w[A0101 A0102 A0202] },
+        'history'  => { label: '역사/문화재',    emoji: '🏰', cat2s: %w[A0201] },
+        'museum'   => { label: '박물관/문화시설', emoji: '🏛️', cat2s: %w[A0206] },
+        'activity' => { label: '체험시설',       emoji: '🎨', cat2s: %w[A0203] },
+        'sports'   => { label: '레포츠/캠핑',    emoji: '⛹️', cat2s: %w[A0302 A0303 A0304 A0305] },
+        'landmark' => { label: '건축/랜드마크',  emoji: '🏗️', cat2s: %w[A0204 A0205] },
+      }
+      type_groups.each do |slug, info|
+        items = attractions.select { |a| info[:cat2s].include?(a['cat2'].to_s) }
+        site.pages << TypePage.new(site, slug, info[:label], info[:emoji], items)
+      end
+      site.pages << TypeIndexPage.new(site, type_groups)
+
       site.pages << SearchIndexPage.new(site, attractions)
       Jekyll.logger.info "KidsGenerator:", "완료"
     end
@@ -135,6 +150,51 @@ module Jekyll
           'contentTypeLabel' => a['contentTypeLabel'] }
       end
       self.data['at_count'] = attractions.size
+    end
+  end
+
+  # ── 유형별 페이지 ──────────────────────
+  class TypePage < Page
+    def initialize(site, slug, label, emoji, attractions)
+      @site = site
+      @base = site.source
+      @dir  = "type/#{slug}"
+      @name = 'index.html'
+
+      self.process(@name)
+      self.read_yaml(File.join(@base, '_layouts'), 'type.html')
+      self.data['layout']      = 'type'
+      self.data['type_slug']   = slug
+      self.data['type_label']  = label
+      self.data['type_emoji']  = emoji
+      self.data['title']       = "#{label} 아이랑 갈만한 곳"
+      self.data['description'] = "아이와 함께 방문하기 좋은 #{label} 시설 #{attractions.size}곳을 한눈에. 우아키즈에서 위치와 상세정보를 확인하세요."
+      self.data['attractions'] = attractions.map do |a|
+        { 'slug' => a['slug'], 'facilityName' => a['name'],
+          'address' => a['address'], 'sido' => a['sido'],
+          'contentType' => a['contentType'], 'contentTypeLabel' => a['contentTypeLabel'],
+          'firstImage' => a['firstImage'] }
+      end
+      self.data['at_count'] = attractions.size
+    end
+  end
+
+  # ── 유형별 인덱스 ──────────────────────
+  class TypeIndexPage < Page
+    def initialize(site, type_groups)
+      @site = site
+      @base = site.source
+      @dir  = 'type'
+      @name = 'index.html'
+
+      self.process(@name)
+      self.read_yaml(File.join(@base, '_layouts'), 'type_index.html')
+      self.data['layout']      = 'type_index'
+      self.data['title']       = '유형별로 찾기 - 우아키즈'
+      self.data['description'] = '박물관, 역사, 자연, 체험, 레포츠 등 유형별로 아이랑 갈만한 곳을 찾아보세요.'
+      self.data['type_groups'] = type_groups.map do |slug, info|
+        { 'slug' => slug, 'label' => info[:label], 'emoji' => info[:emoji] }
+      end
     end
   end
 

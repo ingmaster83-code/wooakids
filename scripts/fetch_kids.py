@@ -365,6 +365,13 @@ def main():
         merge_safety(playgrounds, sfty_raw)
 
         pg_file = OUT_DIR / "playgrounds.json"
+        if pg_file.exists():
+            existing = json.loads(pg_file.read_text(encoding="utf-8"))
+            if len(playgrounds) < len(existing) * 0.5:
+                raise SystemExit(
+                    f"수집 건수({len(playgrounds)}건)가 기존 데이터({len(existing)}건)의 절반 미만입니다. "
+                    "API 오류로 판단하여 저장을 중단합니다."
+                )
         pg_file.write_text(json.dumps(playgrounds, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"  [저장] {len(playgrounds)}개 ({pg_file.stat().st_size/1024/1024:.1f} MB)")
 
@@ -380,6 +387,13 @@ def main():
             print(f"  contentType={ct} 누적: {len(attractions)}개")
 
         tour_file = OUT_DIR / "attractions.json"
+        if tour_file.exists():
+            existing = json.loads(tour_file.read_text(encoding="utf-8"))
+            if len(attractions) < len(existing) * 0.5:
+                raise SystemExit(
+                    f"수집 건수({len(attractions)}건)가 기존 데이터({len(existing)}건)의 절반 미만입니다. "
+                    "API 오류로 판단하여 저장을 중단합니다."
+                )
         tour_file.write_text(json.dumps(attractions, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"  [저장] {len(attractions)}개 ({tour_file.stat().st_size/1024:.0f} KB)")
 

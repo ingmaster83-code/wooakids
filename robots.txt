@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://wooakids.wooahouse.com/sitemap.xml
+
+#DaumWebMasterTool:174809238b08c988b85d7792da89cccf17ba2a22f3e59c21098e3c977ba0c509:5OHFs/qHHlfCvAas17iLzw==

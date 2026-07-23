@@ -203,6 +203,12 @@ img { max-width: 100%; }
 }
 
 /* ===== 상세 페이지 ===== */
+.detail-layout { max-width: 1220px; margin: 0 auto; display: flex; gap: 32px; align-items: flex-start; }
+.detail-layout .detail-wrap { max-width: 860px; margin: 0; flex: 1; min-width: 0; }
+.detail-sidebar { width: 300px; flex-shrink: 0; position: sticky; top: 20px; padding-top: 20px; }
+@media (max-width: 1100px) {
+  .detail-sidebar { display: none; }
+}
 .detail-wrap { max-width: 860px; margin: 0 auto; padding: 20px 20px 60px; }
 .detail-header { margin-bottom: 28px; }
 .detail-title {

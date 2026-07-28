@@ -10,7 +10,7 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="{% if page.title %}{{ page.title }} | 우아키즈{% else %}우아키즈{% endif %}">
   <meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
-  {% if page.firstImage %}<meta property="og:image" content="{{ page.firstImage }}">{% endif %}
+  <meta property="og:image" content="{{ page.firstImage | default: '/assets/og-image.png' | absolute_url }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:site_name" content="우아키즈">
   <meta name="twitter:card" content="summary_large_image">

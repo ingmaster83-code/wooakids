@@ -28,6 +28,8 @@ layout: default
   <img class="attraction-img" src="{{ page.firstImage }}" alt="{{ page.facilityName }}" loading="lazy">
   {% endif %}
 
+  {% include ad-slot.html slot="7080296704" label="상단 배너" %}
+
   <!-- 상세 설명 -->
   <div class="info-box">
     {% if page.overview and page.overview != "" %}

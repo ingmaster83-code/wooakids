@@ -8,8 +8,6 @@ lang: ko
 timezone: Asia/Seoul
 author: WooaHouse
 
-ad_mode: "prod"   # dev | prod
-
 markdown: kramdown
 kramdown:
   input: GFM

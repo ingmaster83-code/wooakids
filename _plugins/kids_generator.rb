@@ -42,12 +42,17 @@ module Jekyll
         'nature'   => { label: '자연/공원',      emoji: '🌿', cat2s: %w[A0101 A0102 A0202] },
         'history'  => { label: '역사/문화재',    emoji: '🏰', cat2s: %w[A0201] },
         'museum'   => { label: '박물관/문화시설', emoji: '🏛️', cat2s: %w[A0206] },
+        'science'  => { label: '과학관',         emoji: '🔬', flag: 'isScience' },
         'activity' => { label: '체험시설',       emoji: '🎨', cat2s: %w[A0203] },
         'sports'   => { label: '레포츠/캠핑',    emoji: '⛹️', cat2s: %w[A0302 A0303 A0304 A0305] },
         'landmark' => { label: '건축/랜드마크',  emoji: '🏗️', cat2s: %w[A0204 A0205] },
       }
       type_groups.each do |slug, info|
-        items = attractions.select { |a| info[:cat2s].include?(a['cat2'].to_s) }
+        items = if info[:flag]
+          attractions.select { |a| a[info[:flag]] }
+        else
+          attractions.select { |a| info[:cat2s].include?(a['cat2'].to_s) }
+        end
         site.pages << TypePage.new(site, slug, info[:label], info[:emoji], items)
       end
       site.pages << TypeIndexPage.new(site, type_groups)

@@ -43,6 +43,7 @@ module Jekyll
         'history'  => { label: '역사/문화재',    emoji: '🏰', cat2s: %w[A0201] },
         'museum'   => { label: '박물관/문화시설', emoji: '🏛️', cat2s: %w[A0206] },
         'science'  => { label: '과학관',         emoji: '🔬', flag: 'isScience' },
+        'zoo'      => { label: '동물원/아쿠아리움', emoji: '🐘', flag: 'isZoo' },
         'activity' => { label: '체험시설',       emoji: '🎨', cat2s: %w[A0203] },
         'sports'   => { label: '레포츠/캠핑',    emoji: '⛹️', cat2s: %w[A0302 A0303 A0304 A0305] },
         'landmark' => { label: '건축/랜드마크',  emoji: '🏗️', cat2s: %w[A0204 A0205] },

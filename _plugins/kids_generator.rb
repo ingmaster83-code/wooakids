@@ -59,6 +59,31 @@ module Jekyll
       site.pages << TypeIndexPage.new(site, type_groups)
 
       site.pages << SearchIndexPage.new(site, attractions)
+
+      # ── 공동육아나눔터 (독립 파이프라인, attractions와 무관) ──
+      nanumteos = load_json(site, '_rawdata/nanumteo.json')
+      if nanumteos.size > 0
+        Jekyll.logger.info "KidsGenerator:", "공동육아나눔터 #{nanumteos.size}개"
+        nt_by_sido = group_by(nanumteos, 'sido')
+
+        nanumteos.each do |nt|
+          next if nt['slug'].to_s.strip.empty?
+          site.pages << NanumteoPage.new(site, nt)
+        end
+
+        nt_by_sido.keys.uniq.sort.each do |sido|
+          next if sido.to_s.strip.empty?
+          nts = nt_by_sido[sido] || []
+          site.pages << NanumteoRegionPage.new(site, sido, '', nts)
+
+          sgg_map = group_by(nts, 'sigungu')
+          sgg_map.keys.uniq.sort.each do |sgg|
+            next if sgg.to_s.strip.empty?
+            site.pages << NanumteoRegionPage.new(site, sido, sgg, sgg_map[sgg] || [])
+          end
+        end
+      end
+
       Jekyll.logger.info "KidsGenerator:", "완료"
     end
 
@@ -200,6 +225,65 @@ module Jekyll
       self.data['description'] = '박물관, 역사, 자연, 체험, 레포츠 등 유형별로 아이랑 갈만한 곳을 찾아보세요.'
       self.data['type_groups'] = type_groups.map do |slug, info|
         { 'slug' => slug, 'label' => info[:label], 'emoji' => info[:emoji] }
+      end
+    end
+  end
+
+  # ── 공동육아나눔터 상세 ──────────────────────
+  class NanumteoPage < Page
+    def initialize(site, nt)
+      @site = site
+      @base = site.source
+      @dir  = "nanumteo/#{nt['slug']}"
+      @name = 'index.html'
+
+      self.process(@name)
+      self.read_yaml(File.join(@base, '_layouts'), 'nanumteo.html')
+      self.data.merge!(nt)
+      self.data['layout']       = 'nanumteo'
+      self.data['facilityName'] = nt['name']
+      self.data['title']        = "#{nt['name']} #{nt['sido']} #{nt['sigungu']} 위치·연락처"
+      self.data['description']  = nt['seoDescription']
+    end
+  end
+
+  # ── 공동육아나눔터 지역별 목록 ──────────────────────
+  class NanumteoRegionPage < Page
+    def initialize(site, sido, sigungu, nanumteos)
+      @site = site
+      @base = site.source
+
+      slug_sido = sido.gsub(/\s+/, '')
+      if sigungu.to_s.strip.empty?
+        @dir      = "nanumteo/region/#{slug_sido}"
+        title_loc = sido
+      else
+        @dir      = "nanumteo/region/#{slug_sido}/#{sigungu.gsub(/\s+/, '')}"
+        title_loc = "#{sido} #{sigungu}"
+      end
+      @name = 'index.html'
+
+      self.process(@name)
+      self.read_yaml(File.join(@base, '_layouts'), 'nanumteo_region.html')
+      self.data['layout']      = 'nanumteo_region'
+      self.data['sido']        = sido
+      self.data['sigungu']     = sigungu.to_s
+      self.data['title']       = "#{title_loc} 공동육아나눔터"
+      self.data['description'] = "#{title_loc} 공동육아나눔터 #{nanumteos.size}곳의 위치와 연락처 정보."
+      self.data['nanumteos']   = nanumteos.map do |nt|
+        { 'slug' => nt['slug'], 'facilityName' => nt['name'],
+          'address' => nt['address'], 'tel' => nt['tel'] }
+      end
+      self.data['nt_count'] = nanumteos.size
+
+      if sigungu.to_s.strip.empty?
+        sgg_counts = {}
+        nanumteos.each do |nt|
+          sgg = nt['sigungu'].to_s.strip
+          next if sgg.empty?
+          sgg_counts[sgg] = (sgg_counts[sgg] || 0) + 1
+        end
+        self.data['sgg_list'] = sgg_counts.keys.sort.map { |k| { 'name' => k, 'count' => sgg_counts[k] } }
       end
     end
   end

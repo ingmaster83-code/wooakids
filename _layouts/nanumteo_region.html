@@ -1,0 +1,50 @@
+---
+layout: default
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  <a href="/nanumteo.html">공동육아나눔터</a>
+  <span class="sep">›</span>
+  {% if page.sigungu and page.sigungu != "" %}
+  <a href="/nanumteo/region/{{ page.sido | remove: ' ' }}/">{{ page.sido }}</a>
+  <span class="sep">›</span>
+  <span>{{ page.sigungu }}</span>
+  {% else %}
+  <span>{{ page.sido }}</span>
+  {% endif %}
+</div>
+
+<div class="region-wrap">
+  <h1 class="region-title">
+    {{ page.sido }}{% if page.sigungu and page.sigungu != "" %} {{ page.sigungu }}{% endif %} 공동육아나눔터
+  </h1>
+  <p class="region-count">공동육아나눔터 {{ page.nt_count }}개</p>
+
+  {% include ad-slot.html slot="7080296704" label="상단 배너" %}
+
+  {% if page.sgg_list and page.sgg_list.size > 0 %}
+  <div class="section-title">🏙️ 구/시/군별로 보기</div>
+  <div class="sgg-grid">
+    {% for sgg in page.sgg_list %}
+    <a href="/nanumteo/region/{{ page.sido | remove: ' ' }}/{{ sgg.name | remove: ' ' }}/" class="sgg-card">
+      <span class="sgg-name">{{ sgg.name }} ({{ sgg.count }})</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if page.nanumteos.size > 0 %}
+  <div class="section-title" style="margin-top:32px">🧸 공동육아나눔터</div>
+  <div class="facility-grid">
+    {% for nt in page.nanumteos %}
+    <div class="facility-card">
+      <a href="/nanumteo/{{ nt.slug }}/" class="facility-card-name">{{ nt.facilityName }}</a>
+      {% if nt.address and nt.address != "" %}<p class="facility-card-addr">📍 {{ nt.address }}</p>{% endif %}
+      {% if nt.tel and nt.tel != "" %}<p class="facility-card-addr">📞 {{ nt.tel }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>

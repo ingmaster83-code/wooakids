@@ -1,0 +1,32 @@
+---
+layout: default
+title: 공동육아나눔터 찾기
+description: 전국 공동육아나눔터 430곳을 지역별로 찾아보세요. 부모와 아이가 함께 이용하는 돌봄 공간의 위치와 연락처를 확인할 수 있습니다.
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  <span>공동육아나눔터</span>
+</div>
+
+<div class="region-wrap">
+  <h1 class="region-title">🧸 공동육아나눔터 찾기</h1>
+  <p class="region-count">전국 430곳 · 부모와 아이가 함께 이용하는 돌봄 공간</p>
+
+  {% include ad-slot.html slot="7080296704" label="상단 배너" %}
+
+  <div class="info-box">
+    <p>공동육아나눔터는 이웃 간 품앗이 돌봄과 다양한 놀이 프로그램을 지원하는 지역사회 육아 공간입니다. 지역별로 가까운 나눔터를 찾아 이용 방법을 확인해보세요.</p>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">지역별로 찾기</div>
+  <div class="btn-grid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr))">
+    {% assign sidos = "서울,부산,대구,인천,광주,대전,울산,세종,경기,강원,충북,충남,전북,전남,경북,경남,제주" | split: "," %}
+    {% for sido in sidos %}
+    <a href="/nanumteo/region/{{ sido }}/" class="btn-card">
+      <span style="font-size:1.1rem;font-weight:700">{{ sido }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>

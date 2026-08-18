@@ -1,0 +1,66 @@
+---
+layout: default
+---
+
+<div class="breadcrumb">
+  <a href="/">홈</a>
+  <span class="sep">›</span>
+  <a href="/nanumteo.html">공동육아나눔터</a>
+  <span class="sep">›</span>
+  {% if page.sido %}<a href="/nanumteo/region/{{ page.sido | remove: ' ' }}/">{{ page.sido }}</a><span class="sep">›</span>{% endif %}
+  <span>{{ page.facilityName }}</span>
+</div>
+
+<div class="detail-layout">
+<div class="detail-wrap">
+  <div class="detail-header">
+    <span class="type-badge">🧸 공동육아나눔터</span>
+    {% if page.sido %}<span class="type-badge" style="margin-left:6px">{{ page.sido }} {{ page.sigungu }}</span>{% endif %}
+    <h1 class="detail-title">{{ page.facilityName }}</h1>
+    {% if page.address %}<p class="detail-addr">📍 {{ page.address }}</p>{% endif %}
+    {% if page.tel and page.tel != "" %}<p class="detail-addr">📞 <a href="tel:{{ page.tel }}">{{ page.tel }}</a></p>{% endif %}
+  </div>
+
+  {% include ad-slot.html slot="7080296704" label="상단 배너" %}
+
+  <div class="info-box">
+    <p>{{ page.seoDescription }}</p>
+    <p style="margin-top:8px;font-size:.85rem;color:var(--text-muted)">
+      공동육아나눔터는 부모(보호자)와 아이가 함께 이용하는 돌봄 공간으로, 놀이 프로그램과 이웃 간 품앗이 돌봄 활동이 운영됩니다.
+      이용 방법과 예약은 방문 전 반드시 전화로 확인하세요.
+    </p>
+    {% if page.address and page.address != "" %}
+    <div class="action-btn-wrap">
+      <a href="https://wooaparking.wooahouse.com/?q={{ page.address | url_encode }}" class="action-btn btn-parking">🗺️ 지도 &amp; 공영주차장 확인하기</a>
+    </div>
+    {% endif %}
+  </div>
+
+  {% include ad-slot.html slot="1419180025" label="본문 중간 배너" %}
+
+  <!-- 우아동네 교차링크 -->
+  <div class="crosslink-box">
+    <a href="https://wooatown.wooahouse.com/지역/{{ page.sido | uri_escape }}.html" target="_blank" rel="noopener" class="crosslink-link">
+      🏠 {{ page.sido }} 다른 생활정보 보기 (우아동네) →
+    </a>
+  </div>
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ChildCare",
+    "name": "{{ page.facilityName | escape }}",
+    "address": { "@type": "PostalAddress", "streetAddress": "{{ page.address | escape }}", "addressRegion": "{{ page.sido }}" }
+    {% if page.tel and page.tel != "" %},"telephone": "{{ page.tel | escape }}"{% endif %}
+  }
+  </script>
+
+  <p style="margin-top:24px;">
+    <a href="/nanumteo/region/{{ page.sido | remove: ' ' }}/{{ page.sigungu | remove: ' ' }}/">{{ page.sido }} {{ page.sigungu }} 공동육아나눔터 전체 보기 →</a>
+  </p>
+</div>
+<aside class="detail-sidebar">
+  {% include ad-slot.html slot="6255378195" label="사이드바" %}
+</aside>
+</div>

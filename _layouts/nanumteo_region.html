@@ -16,7 +16,8 @@ layout: default
   {% endif %}
 </div>
 
-<div class="region-wrap">
+<div class="detail-layout">
+<div class="detail-wrap region-wrap">
   <h1 class="region-title">
     {{ page.sido }}{% if page.sigungu and page.sigungu != "" %} {{ page.sigungu }}{% endif %} 공동육아나눔터
   </h1>
@@ -47,4 +48,8 @@ layout: default
     {% endfor %}
   </div>
   {% endif %}
+</div>
+<aside class="detail-sidebar">
+  {% include ad-slot.html slot="6255378195" label="사이드바" %}
+</aside>
 </div>

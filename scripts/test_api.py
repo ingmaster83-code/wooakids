@@ -5,9 +5,14 @@ test_api.py - wooakids API 4개 샘플 검증 (각 10건)
 import json
 import sys
 import requests
+
+def _need_key():
+    import os, sys
+    return os.environ.get("DATA_GO_KR_API_KEY") or sys.exit("환경변수 DATA_GO_KR_API_KEY 가 필요합니다(키를 코드에 넣지 마세요).")
+
 sys.stdout.reconfigure(encoding='utf-8')
 
-API_KEY = "9490b1d34e92aa9e25b32a4cff1438fc7b9c71e5d332413916a391e867f61e86"
+API_KEY = _need_key()
 
 APIS = {
     "놀이시설_기본정보": {
